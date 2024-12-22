@@ -1,6 +1,6 @@
 import React from "react";
 import { useRoutes } from "react-router-dom";
-import DiaryPage from "./pages/DiaryPage";
+import DiaryPage from "./pages/DiaryPage.jsx";
 import AuthPage from "./pages/AuthPage";
 import { AuthProvider } from "./app/providers/AuthProvider"; // Подключаем AuthProvider
 

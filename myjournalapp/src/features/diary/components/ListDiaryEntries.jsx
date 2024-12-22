@@ -3,7 +3,6 @@ import React from 'react';
 const ListDiaryEntries = ({ entries, onDelete, onEdit }) => {
   return (
     <div>
-      <h2 className="text-xl font-semibold">Your Diary Entries</h2>
       <ul className="mt-4">
         {entries.length === 0 ? (
           <p>No entries yet. Start writing!</p>
@@ -14,6 +13,7 @@ const ListDiaryEntries = ({ entries, onDelete, onEdit }) => {
                 <div>
                   <h3 className="font-medium text-lg">{entry.title}</h3>
                   <p className="text-sm text-gray-600">{entry.content.slice(0, 100)}...</p>
+                  {entry.imageUrl && <img src={entry.imageUrl} alt="entry" className="mt-2" width="100" />}
                 </div>
                 <div>
                   <button
