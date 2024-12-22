@@ -17,6 +17,13 @@ This repository contains the frontend code for the **Journal App** built using R
 - **React Router**: For managing navigation and routing.
 - **Axios**: For making HTTP requests to the backend.
 
+  ## Pages
+
+- **Home Page**: Accessible at [http://localhost:5174/](http://localhost:5174/) - The main landing page of the application.
+- **Authentication Page**: Accessible at [http://localhost:5174/auth](http://localhost:5174/auth) - Users can log in or sign up.
+- **Diary Page**: Accessible at [http://localhost:5174/diary](http://localhost:5174/diary) - Users can view and manage their diary entries.
+
+
 ## Setup and Installation
 
 To run this project locally, follow these steps:
