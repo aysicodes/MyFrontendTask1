@@ -1,50 +1,51 @@
 import React, { useState } from 'react';
 import ListDiaryEntries from '../features/diary/components/ListDiaryEntries';
+import ConfirmModal from '../features/diary/components/ConfirmModal'; // Import the modal component
 
 const DiaryPage = () => {
   const [entries, setEntries] = useState([]);
-  const [currentEntry, setCurrentEntry] = useState(null); // Для редактирования
-  const [newTitle, setNewTitle] = useState(''); // Для нового заголовка
-  const [newContent, setNewContent] = useState(''); // Для нового содержимого
-  const [image, setImage] = useState(null); // Для хранения загруженного изображения
-  const [error, setError] = useState(''); // Для ошибки
+  const [currentEntry, setCurrentEntry] = useState(null);
+  const [newTitle, setNewTitle] = useState('');
+  const [newContent, setNewContent] = useState('');
+  const [image, setImage] = useState(null);
+  const [error, setError] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [entryToDelete, setEntryToDelete] = useState(null);
 
-  // Обработчик создания нового поста
+  // Create new post
   const handleCreate = (e) => {
     e.preventDefault();
 
-    // Проверяем, что заголовок и содержимое не пустые
     if (!newTitle || !newContent) {
-      setError('Title and content are required!'); // Показываем ошибку
-      return; // Останавливаем выполнение
+      setError('Title and content are required!');
+      return;
     }
 
     const newEntry = { 
-      id: Date.now(), // Генерация уникального ID для записи
+      id: Date.now(),
       title: newTitle, 
       content: newContent,
-      imageUrl: image ? URL.createObjectURL(image) : '', // Если изображение выбрано, создаем URL
+      imageUrl: image ? URL.createObjectURL(image) : '',
     };
-    setEntries([...entries, newEntry]); // Добавляем новый пост в список
-    setNewTitle(''); // Очищаем поле ввода
-    setNewContent(''); // Очищаем поле ввода
-    setImage(null); // Очищаем выбранное изображение
-    setError(''); // Очищаем ошибку
+    setEntries([...entries, newEntry]);
+    setNewTitle('');
+    setNewContent('');
+    setImage(null);
+    setError('');
   };
 
-  // Обработчик редактирования записи
+  // Edit entry
   const handleEdit = (entry) => {
-    setCurrentEntry(entry); // Сохраняем выбранную запись для редактирования
-    setNewTitle(entry.title); // Заполняем поля формы для редактирования
+    setCurrentEntry(entry);
+    setNewTitle(entry.title);
     setNewContent(entry.content);
-    setImage(entry.imageUrl ? null : ''); // Если есть изображение, не загружаем новое
+    setImage(entry.imageUrl ? null : ''); 
   };
 
-  // Обработчик сохранения изменений
+  // Save entry changes
   const handleSave = (e) => {
     e.preventDefault();
-    
-    // Проверка перед сохранением изменений
+
     if (!newTitle || !newContent) {
       setError('Title and content are required!');
       return;
@@ -53,18 +54,39 @@ const DiaryPage = () => {
     setEntries(entries.map((entry) =>
       entry.id === currentEntry.id ? { ...entry, title: newTitle, content: newContent, imageUrl: image ? URL.createObjectURL(image) : currentEntry.imageUrl } : entry
     ));
-    setCurrentEntry(null); // Закрыть форму редактирования
+    setCurrentEntry(null);
     setNewTitle('');
     setNewContent('');
     setImage(null);
     setError('');
   };
 
+  // Open delete confirmation modal
+  const handleDeleteClick = (entry) => {
+    setEntryToDelete(entry); // Set the whole entry for deletion
+    setIsModalOpen(true); // Open the modal
+  };
+
+  // Confirm delete
+  const handleConfirmDelete = () => {
+    if (entryToDelete) {
+      setEntries(entries.filter((entry) => entry.id !== entryToDelete.id)); // Remove the entry
+    }
+    setIsModalOpen(false);
+    setEntryToDelete(null);
+  };
+
+  // Cancel delete
+  const handleCancelDelete = () => {
+    setIsModalOpen(false);
+    setEntryToDelete(null);
+  };
+
   return (
     <div>
       <h1>My Diary</h1>
-      
-      {error && <p style={{ color: 'red' }}>{error}</p>} {/* Показываем ошибку, если она есть */}
+
+      {error && <p style={{ color: 'red' }}>{error}</p>}
 
       <form onSubmit={currentEntry ? handleSave : handleCreate}>
         <input
@@ -84,16 +106,22 @@ const DiaryPage = () => {
           accept="image/*"
           onChange={(e) => setImage(e.target.files[0])}
         />
-        {image && <p>Image selected: {image.name}</p>} {/* Отображаем имя выбранного файла */}
-        
+        {image && <p>Image selected: {image.name}</p>}
+
         <button type="submit">{currentEntry ? "Save Changes" : "Create Entry"}</button>
       </form>
-      
+
       <h2>Your Diary Entries</h2>
       <ListDiaryEntries
         entries={entries}
         onEdit={handleEdit}
-        onDelete={(id) => setEntries(entries.filter((entry) => entry.id !== id))}
+        onDelete={handleDeleteClick} // Pass correct handler
+      />
+
+      <ConfirmModal
+        isOpen={isModalOpen}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
       />
     </div>
   );

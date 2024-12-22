@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
+// Создание контекста
 const AuthContext = createContext();
 
 export const useAuth = () => {
@@ -14,29 +15,29 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   // Логика для логина
-  const login = (username) => {
-    setUser({ username });
-    localStorage.setItem("user", JSON.stringify({ username })); // Сохраняем в localStorage
+  const login = (username, password) => {
+    setUser({ username }); // Пример: в реальном проекте можно отправить запрос на сервер
+    localStorage.setItem("user", JSON.stringify({ username })); // Сохраняем пользователя в localStorage
   };
 
   // Логика для регистрации
-  const register = (username) => {
-    setUser({ username });
-    localStorage.setItem("user", JSON.stringify({ username })); // Сохраняем в localStorage
+  const register = (username, password) => {
+    setUser({ username }); // Пример: в реальном проекте можно отправить запрос на сервер
+    localStorage.setItem("user", JSON.stringify({ username })); // Сохраняем пользователя в localStorage
   };
 
   // Проверка состояния пользователя при инициализации
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
-      setUser(JSON.parse(savedUser)); // Восстанавливаем пользователя из localStorage
+      setUser(JSON.parse(savedUser)); // Если есть пользователь в localStorage, восстанавливаем состояние
     }
   }, []);
 
   const value = {
     user,
     login,
-    register,
+    register, // Добавляем функцию регистрации
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

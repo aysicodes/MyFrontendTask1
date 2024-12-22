@@ -1,7 +1,9 @@
+// src/features/diary/components/CreateEntryForm.jsx
 import React, { useState } from 'react';
-import Button from '../../../shared/ui/Button';  // Импортируем Button из общей UI компоненты
-import Input from '../../../shared/ui/Input';    // Импортируем Input из общей UI компоненты
-import { saveDiaryEntry } from '../../api/diaryApi';  // Импортируем функцию saveDiaryEntry
+import Button from '../../../shared/ui/Button';  // Import Button from shared UI components
+import Input from '../../../shared/ui/Input';    // Import Input from shared UI components
+import { saveDiaryEntry } from '../../api/diaryApi';  // Import saveDiaryEntry function
+import RichTextEditor from './RichTextEditor';  // Import RichTextEditor component
 
 const CreateEntryForm = ({ onSave }) => {
   const [title, setTitle] = useState('');
@@ -12,7 +14,7 @@ const CreateEntryForm = ({ onSave }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Валидация
+    // Validation
     if (title.trim() === '' || content.trim() === '') {
       setError('Both title and content are required.');
       return;
@@ -26,27 +28,27 @@ const CreateEntryForm = ({ onSave }) => {
       return;
     }
 
-    // Устанавливаем флаг загрузки
+    // Set submitting state
     setIsSubmitting(true);
 
     try {
-      // Сохраняем запись через API
+      // Save the entry via API
       const savedEntry = await saveDiaryEntry({ title, content });
 
-      // Если onSave передан как пропс, вызываем его с сохраненной записью
+      // If onSave is passed, invoke it with the saved entry
       if (onSave) {
         onSave(savedEntry);
       }
 
-      // Сбрасываем форму
+      // Reset form
       setTitle('');
       setContent('');
       setError('');
     } catch (err) {
-      // Обрабатываем ошибку
+      // Handle error
       setError('There was an error saving your entry.');
     } finally {
-      // Сбрасываем флаг загрузки
+      // Reset submitting state
       setIsSubmitting(false);
     }
   };
@@ -58,12 +60,7 @@ const CreateEntryForm = ({ onSave }) => {
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
-      <textarea
-        className="p-2 border border-gray-300 rounded w-full h-40"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        placeholder="Write your diary entry..."
-      />
+      <RichTextEditor value={content} onChange={setContent} />  {/* Use RichTextEditor */}
       {error && <p className="text-red-500">{error}</p>}
       <Button type="submit" disabled={isSubmitting}>
         {isSubmitting ? 'Saving...' : 'Save Entry'}

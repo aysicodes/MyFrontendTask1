@@ -12,7 +12,11 @@ const ListDiaryEntries = ({ entries, onDelete, onEdit }) => {
               <div className="flex justify-between items-center">
                 <div>
                   <h3 className="font-medium text-lg">{entry.title}</h3>
-                  <p className="text-sm text-gray-600">{entry.content.slice(0, 100)}...</p>
+                  <p
+                    className="text-sm text-gray-600"
+                    dangerouslySetInnerHTML={{ __html: entry.content }} 
+                  />
+                  {/* Render rich text */}
                   {entry.imageUrl && <img src={entry.imageUrl} alt="entry" className="mt-2" width="100" />}
                 </div>
                 <div>
@@ -24,7 +28,7 @@ const ListDiaryEntries = ({ entries, onDelete, onEdit }) => {
                   </button>
                   <button
                     className="bg-red-500 text-white px-4 py-2 rounded"
-                    onClick={() => onDelete(entry.id)}
+                    onClick={() => onDelete(entry)} // Pass full entry object here
                   >
                     Delete
                   </button>
