@@ -1,15 +1,15 @@
 // src/main.jsx
 import React from 'react';
-import ReactDOM from 'react-dom/client'; // Импортируем createRoot
+import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
-import { DiaryProvider } from './app/providers/DiaryProvider';
+import { AuthProvider } from './app/providers/AuthProvider'; // Подключаем AuthProvider
 
-const root = ReactDOM.createRoot(document.getElementById('root')); // Создаем корень приложения
+const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
-    <DiaryProvider>
+    <AuthProvider>
       <App />
-    </DiaryProvider>
+    </AuthProvider>
   </BrowserRouter>
 );

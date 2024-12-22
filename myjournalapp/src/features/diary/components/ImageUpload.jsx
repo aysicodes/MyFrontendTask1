@@ -1,12 +1,14 @@
-// src/features/diary/components/ImageUpload.jsx
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const ImageUpload = ({ onImageUpload }) => {
   const [image, setImage] = useState(null);
   const [error, setError] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
+
     if (file) {
       if (!file.type.startsWith('image/')) {
         setError('Please upload a valid image file.');
@@ -20,16 +22,31 @@ const ImageUpload = ({ onImageUpload }) => {
         return;
       }
 
-      setError('');
-      setImage(URL.createObjectURL(file));  // Display image as thumbnail
-      onImageUpload(file);  // Pass the file to the parent component
+      try {
+        const formData = new FormData();
+        formData.append('image', file);
+        
+        // Убедитесь, что путь правильный, указав правильный путь для API
+        const response = await axios.post('http://localhost:8080/image/upload', formData, {  // Путь изменен на правильный
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+
+        // Получаем URL изображения из ответа
+        setImageUrl(response.data);  // Предполагается, что сервер возвращает URL изображения
+        onImageUpload(response.data);  // Передаем URL в родительский компонент
+        setImage(file);  // Сохраняем файл изображения для отображения
+        setError('');
+      } catch (error) {
+        setError('Image upload failed.');
+      }
     }
   };
 
   const handleRemoveImage = () => {
     setImage(null);
+    setImageUrl('');
     setError('');
-    onImageUpload(null);  // Clear the uploaded image in parent
+    onImageUpload(null);  // Очищаем загруженное изображение в родительском компоненте
   };
 
   return (
@@ -45,11 +62,8 @@ const ImageUpload = ({ onImageUpload }) => {
 
       {image && (
         <div className="mt-4">
-          <img src={image} alt="Selected" className="w-32 h-32 object-cover rounded" />
-          <button
-            onClick={handleRemoveImage}
-            className="mt-2 text-red-500 text-sm"
-          >
+          <img src={URL.createObjectURL(image)} alt="Selected" className="w-32 h-32 object-cover rounded" />
+          <button onClick={handleRemoveImage} className="mt-2 text-red-500 text-sm">
             Remove Image
           </button>
         </div>

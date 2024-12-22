@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'journal-app-production-0195.up.railway.app/api/posts';
+const API_URL = 'http://localhost:3000/api/posts';
 
 export const saveDiaryEntry = async (entry) => {
   try {

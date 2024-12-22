@@ -8,7 +8,7 @@ export const DiaryProvider = ({ children }) => {
   const [entries, setEntries] = useState([]);
   const [image, setImage] = useState(null);
 
-  const API_URL = 'journal-app-production-0195.up.railway.app/api/posts';
+  const API_URL = 'http://localhost:3000/api/posts';
 
   const addEntry = (entry) => {
     setEntries((prevEntries) => [...prevEntries, entry]);

@@ -43,6 +43,13 @@ const DiaryPage = () => {
   // Обработчик сохранения изменений
   const handleSave = (e) => {
     e.preventDefault();
+    
+    // Проверка перед сохранением изменений
+    if (!newTitle || !newContent) {
+      setError('Title and content are required!');
+      return;
+    }
+
     setEntries(entries.map((entry) =>
       entry.id === currentEntry.id ? { ...entry, title: newTitle, content: newContent, imageUrl: image ? URL.createObjectURL(image) : currentEntry.imageUrl } : entry
     ));
@@ -50,6 +57,7 @@ const DiaryPage = () => {
     setNewTitle('');
     setNewContent('');
     setImage(null);
+    setError('');
   };
 
   return (
